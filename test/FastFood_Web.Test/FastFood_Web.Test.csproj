@@ -21,4 +21,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FastFood_Web\FastFood_Web.Api.csproj" />
+  </ItemGroup>
+
 </Project>
