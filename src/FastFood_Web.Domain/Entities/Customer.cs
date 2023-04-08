@@ -4,7 +4,6 @@ namespace FastFood_Web.Domain.Entities
 {
     public class Customer : Base
     {
-        public string Email { get; set; } = String.Empty;
         public string TelegramId { get; set; } = String.Empty;
         public long UserId { get; set; }
         public virtual User User { get; set; } = default!;

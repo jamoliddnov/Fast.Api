@@ -9,7 +9,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 
+builder.ConfigurAuth();
+builder.Services.AddService();
+
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

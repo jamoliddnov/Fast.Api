@@ -6,6 +6,7 @@ using FastFood_Web.Service.Common.Security;
 using FastFood_Web.Service.Dtos.AccountsDto;
 using FastFood_Web.Service.Helpers;
 using FastFood_Web.Service.Interfaces;
+using FastFood_Web.Service.Interfaces.Common;
 using System.Net;
 
 namespace FastFood_Web.Service.Services
@@ -13,15 +14,32 @@ namespace FastFood_Web.Service.Services
     public class AccountService : IAccountService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuthManager _authManager;
 
-        public AccountService(IUnitOfWork unitOfWork)
+        public AccountService(IUnitOfWork unitOfWork , IAuthManager authManager)
         {
             this._unitOfWork = unitOfWork;
+            this._authManager = authManager;
+
         }
 
-        public async Task<bool> LoginAsync(AccountLoginDto logindto)
+        public async Task<string> LoginAsync(AccountLoginDto logindto)
         {
-            return false;
+            var emaiResult = await _unitOfWork.Users.FirstOrDefaultAsync(x => x.Email == logindto.Email);
+            if (emaiResult is null)
+            {
+                throw new StatusCodeException(HttpStatusCode.NotFound, "User not found, Email is incorrect");
+            }
+
+            var userPassword = PasswordHasher.Verify(logindto.Password, emaiResult.Salt, emaiResult.PasswordHash);
+            if (userPassword)
+            {
+                return _authManager.GenerateToken(emaiResult);
+            }
+            else
+            {
+                throw new StatusCodeException(HttpStatusCode.BadRequest, "Password is wrong!");
+            }
         }
 
         public async Task<bool> RegisterAsync(AccountRegisterDto registerDto)
@@ -44,7 +62,7 @@ namespace FastFood_Web.Service.Services
             user.Salt = password.Salt;
             user.UserRole = UserRole.Customer;
             user.CreatedAt = TimeHelper.GetCurrentServerTime();
-            _unitOfWork.Users.Create(user);
+            _unitOfWork.Users.Add(user);
             var result = await _unitOfWork.SaveChangesAsync();
             return result > 0;
         }
