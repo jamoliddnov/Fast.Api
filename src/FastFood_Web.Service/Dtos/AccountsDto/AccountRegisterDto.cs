@@ -23,7 +23,7 @@ namespace FastFood_Web.Service.Dtos.AccountsDto
                 FullName = registerDto.FullName,
                 PhoneNumber = registerDto.PhoneNumber,
                 Email = registerDto.Email,
-                Password = registerDto.Password
+                PasswordHash = registerDto.Password
             };
         }
     }
