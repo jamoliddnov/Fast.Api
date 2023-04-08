@@ -7,8 +7,10 @@ namespace FastFood_Web.Domain.Entities
     {
         public string FullName { get; set; } = String.Empty;
         public string PhoneNumber { get; set; } = String.Empty;
+        public string Email { get; set; } = String.Empty;
         public string PasswordHash { get; set; } = String.Empty;
         public string Salt { get; set; } = String.Empty;
+        public DateTime CreatedAt { get; set; }
         public UserRole UserRole { get; set; }
     }
 }
