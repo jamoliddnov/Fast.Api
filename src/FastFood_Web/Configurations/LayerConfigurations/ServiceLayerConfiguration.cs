@@ -1,0 +1,37 @@
+﻿using FastFood_Web.Api.Configurations.LayerConfigurations;
+using FastFood_Web.DataAccess.Interfaces.Common;
+using FastFood_Web.DataAccess.Repositories.Common;
+using FastFood_Web.Service.Common.Security;
+using FastFood_Web.Service.Interfaces;
+using FastFood_Web.Service.Interfaces.Common;
+using FastFood_Web.Service.Services;
+
+namespace FastFood_Web.Api.Configurations.LayerConfigurations
+{
+    public static class ServiceLayerConfiguration
+    {
+        public static void AddService(this IServiceCollection services)
+        {
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuthManager, AuthManager>();
+           
+        }
+    }
+}
+
+
+//public static void AddService(this IServiceCollection services)
+//{
+//    services.AddScoped<IAnnouncementService, AnnouncementService>();
+//    services.AddScoped<IFileService, FileService>();
+//    services.AddScoped<IAuthManagerService, AuthManagerService>();
+//    services.AddScoped<IUnitOfWork, UnitOfWork>();
+//    services.AddScoped<IPaginatorService, PaginatorService>();
+//    services.AddScoped<IAccountService, AccountService>();
+//    services.AddScoped<IIdentityService, IdentityService>();
+//    services.AddScoped<ICustomerService, CustomerService>();
+//    services.AddScoped<IAdminService, AdminService>();
+//    services.AddHttpContextAccessor();
+//    services.AddAutoMapper(typeof(MappingConfiguration));
+//}

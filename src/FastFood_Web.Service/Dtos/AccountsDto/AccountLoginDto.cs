@@ -9,6 +9,5 @@ namespace FastFood_Web.Service.Dtos.AccountsDto
         public string Email { get; set; } = String.Empty;
         [Required, PasswordAttribute]
         public string Password { get; set; } = String.Empty;
-
     }
 }
