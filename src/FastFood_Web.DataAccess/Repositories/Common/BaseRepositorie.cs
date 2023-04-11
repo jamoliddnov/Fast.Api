@@ -1,6 +1,5 @@
 ﻿using FastFood_Web.DataAccess.DbContexts;
 using FastFood_Web.DataAccess.Interfaces.Common;
-using FastFood_Web.DataAccess.Repositories.Common;
 using FastFood_Web.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -20,7 +19,7 @@ namespace FastFood_Web.DataAccess.Repositories.Common
 
         public virtual T Add(T entity)
         {
-            var res =  _dbSet.Add(entity);
+            var res = _dbSet.Add(entity);
             return res.Entity;
         }
 
@@ -29,9 +28,9 @@ namespace FastFood_Web.DataAccess.Repositories.Common
             throw new NotImplementedException();
         }
 
-        public Task<T?> FirstByIdAsync(long id)
+        public async Task<T?> FindByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FindAsync(id);
         }
 
         public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression)
@@ -44,9 +43,11 @@ namespace FastFood_Web.DataAccess.Repositories.Common
             throw new NotImplementedException();
         }
 
-        public void Update(long id, T entity)
+        public virtual void Update(long id, T entity)
         {
-            throw new NotImplementedException();
+
+            entity.Id = id;
+            _dbSet.Update(entity);
         }
     }
 }
