@@ -4,7 +4,8 @@ using FastFood_Web.Service.Common.Security;
 using FastFood_Web.Service.Interfaces;
 using FastFood_Web.Service.Interfaces.Common;
 using FastFood_Web.Service.Services;
-using FastFood_Web.Service.Services.Common;
+using FastFood_Web.Service.Services.Common.EmailServic;
+using FastFood_Web.Service.Services.Common.PaginationServic;
 
 namespace FastFood_Web.Api.Configurations.LayerConfigurations
 {
@@ -16,6 +17,7 @@ namespace FastFood_Web.Api.Configurations.LayerConfigurations
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPaginationService, PaginationService>();
         }
     }
 }
