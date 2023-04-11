@@ -28,7 +28,25 @@ namespace FastFood_Web.Api.Controllers
             return Ok(await _accountService.LoginAsync(accountLogindto));
         }
 
+        [HttpPost("sendEmail")]
+        public async Task<IActionResult> EmailSend([FromForm] SendToEmailDto sendToEmail)
+        {
+            await _accountService.SendCodeAsync(sendToEmail);
+            return Ok();
+        }
 
+
+        [HttpPost("verify-code")]
+        public async Task<IActionResult> VerifyCode([FromForm] UserResetPasswordDto resetPasswordDto)
+        {
+            return Ok(await _accountService.VerifyResetPassword(resetPasswordDto));
+        }
+
+        [HttpPatch("updatePassword")]
+        public async Task<IActionResult> UpdatePassword([FromForm] PasswordUpdateDto updateDto)
+        {
+            return Ok(await _accountService.UpdatePasswordAsync(updateDto));
+        }
 
     }
 }

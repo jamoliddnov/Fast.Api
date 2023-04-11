@@ -7,6 +7,8 @@ using FastFood_Web.Service.Dtos.AccountsDto;
 using FastFood_Web.Service.Helpers;
 using FastFood_Web.Service.Interfaces;
 using FastFood_Web.Service.Interfaces.Common;
+using FastFood_Web.Service.ViewModel.Helper;
+using Microsoft.Extensions.Caching.Memory;
 using System.Net;
 
 namespace FastFood_Web.Service.Services
@@ -15,12 +17,15 @@ namespace FastFood_Web.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthManager _authManager;
+        private readonly IMemoryCache _memoryCache;
+        private readonly IEmailService _emailService;
 
-        public AccountService(IUnitOfWork unitOfWork , IAuthManager authManager)
+        public AccountService(IUnitOfWork unitOfWork, IAuthManager authManager, IMemoryCache memoryCache, IEmailService emailService)
         {
             this._unitOfWork = unitOfWork;
             this._authManager = authManager;
-
+            this._memoryCache = memoryCache;
+            this._emailService = emailService;
         }
 
         public async Task<string> LoginAsync(AccountLoginDto logindto)
@@ -66,5 +71,71 @@ namespace FastFood_Web.Service.Services
             var result = await _unitOfWork.SaveChangesAsync();
             return result > 0;
         }
+
+        public async Task SendCodeAsync(SendToEmailDto sendToEmail)
+        {
+            int code = new Random().Next(100000, 999999);
+            _memoryCache.Set(sendToEmail.Email, code, TimeSpan.FromMinutes(10));
+
+            var message = new EmailMessage()
+            {
+                To = sendToEmail.Email,
+                Subject = "Verification code",
+                Body = code.ToString()
+            };
+
+            await _emailService.SendAsync(message);
+        }
+
+        public async Task<bool> UpdatePasswordAsync(PasswordUpdateDto dto)
+        {
+            var user = await _unitOfWork.Users.FindByIdAsync(1);
+
+            if (user is null)
+            {
+                throw new StatusCodeException(HttpStatusCode.NotFound, "User not found");
+            }
+            else
+            {
+                var passwordresult = PasswordHasher.Hash(dto.Password);
+
+                user.PasswordHash = passwordresult.PasswordHash;
+                user.Salt = passwordresult.Salt;
+                _unitOfWork.Users.Update(user.Id, user);
+                var result = await _unitOfWork.SaveChangesAsync();
+                return result > 0;
+            }
+        }
+
+        public async Task<bool> VerifyResetPassword(UserResetPasswordDto resetPasswordDto)
+        {
+            var user = await _unitOfWork.Users.GetByEmailAsync(resetPasswordDto.Email);
+            if (user is null)
+            {
+                throw new StatusCodeException(HttpStatusCode.NotFound, "User not found");
+            }
+
+            if (_memoryCache.TryGetValue(resetPasswordDto.Email, out int expectedCode) is false)
+            {
+                throw new StatusCodeException(HttpStatusCode.BadRequest, "Code is expired");
+            }
+
+            if (expectedCode != resetPasswordDto.Code)
+            {
+                throw new StatusCodeException(HttpStatusCode.BadRequest, "Code is wrong");
+            }
+
+            var newPassword = PasswordHasher.Hash(resetPasswordDto.Password);
+            user.PasswordHash = newPassword.PasswordHash;
+            user.Salt = newPassword.Salt;
+
+            _unitOfWork.Users.Update(user.Id, user);
+
+            var result = await _unitOfWork.SaveChangesAsync();
+
+            return result > 0;
+        }
     }
 }
+
+
