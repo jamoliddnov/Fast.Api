@@ -7,10 +7,14 @@ using FastFood_Web.Service.Services;
 using FastFood_Web.Service.Services.Common.EmailServic;
 using FastFood_Web.Service.Services.Common.PaginationServic;
 
+
+
 namespace FastFood_Web.Api.Configurations.LayerConfigurations
 {
+
     public static class ServiceLayerConfiguration
     {
+
         public static void AddService(this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
@@ -18,6 +22,8 @@ namespace FastFood_Web.Api.Configurations.LayerConfigurations
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IPaginationService, PaginationService>();
+            services.AddScoped<ICategoryEmpolyeeService, CategoryEmpolyeeService>();
+            services.AddAutoMapper(typeof(MappingConfiguration));
         }
     }
 }

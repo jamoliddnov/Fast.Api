@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.15">
       <PrivateAssets>all</PrivateAssets>
@@ -20,5 +19,4 @@
   <ItemGroup>
     <ProjectReference Include="..\FastFood_Web.Service\FastFood_Web.Service.csproj" />
   </ItemGroup>
-
 </Project>
