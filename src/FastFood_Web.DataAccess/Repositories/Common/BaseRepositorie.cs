@@ -23,9 +23,13 @@ namespace FastFood_Web.DataAccess.Repositories.Common
             return res.Entity;
         }
 
-        public void Delete(long id)
+        public virtual void Delete(long id)
         {
-            throw new NotImplementedException();
+            var entity = _dbSet.Find(id);
+            if (entity is not null)
+            {
+                _dbSet.Remove(entity);
+            }
         }
 
         public async Task<T?> FindByIdAsync(long id)

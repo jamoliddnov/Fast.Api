@@ -1,4 +1,5 @@
-﻿using FastFood_Web.DataAccess.Interfaces.Common;
+﻿using AutoMapper;
+using FastFood_Web.DataAccess.Interfaces.Common;
 using FastFood_Web.Domain.Entities;
 using FastFood_Web.Service.Dtos.CategoryEmpolyeeDto;
 using FastFood_Web.Service.Interfaces;
@@ -9,10 +10,12 @@ namespace FastFood_Web.Service.Services
     public class CategoryEmpolyeeService : ICategoryEmpolyeeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        //private readonly IMapper _mapper; 
 
-        public CategoryEmpolyeeService(IUnitOfWork unitOfWork)
+        public CategoryEmpolyeeService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this._unitOfWork = unitOfWork;
+            //this._mapper = mapper;
         }
 
         public async Task<bool> CreateAsync(CreateCategoryEmpolyeeDto empolyeeDto)
@@ -20,7 +23,6 @@ namespace FastFood_Web.Service.Services
             _unitOfWork.CategoryEmpolyees.Add(empolyeeDto);
             var result = await _unitOfWork.SaveChangesAsync();
             return result > 0;
-
         }
 
         public async Task<bool> DeleteAsync(long id)
@@ -42,7 +44,7 @@ namespace FastFood_Web.Service.Services
         {
             _unitOfWork.CategoryEmpolyees.Update(id, categoryEmpolyee);
             var result = await _unitOfWork.SaveChangesAsync();
-            return result >= 0;
+            return result > 0;
         }
     }
 }
